@@ -129,7 +129,7 @@ def crear_indice_distancias(documentos,codificacion):
             else:
                 diferencia = int(lista_documento[i])-num_doc_actual
                 distancia += str(diferencia)
-            num_doc_actual += int(lista_documento[i])
+            num_doc_actual = int(lista_documento[i])
         documentos_en_distancia.append(distancia)
     return crear_indice_concatenado(documentos_en_distancia,codificacion)
 
