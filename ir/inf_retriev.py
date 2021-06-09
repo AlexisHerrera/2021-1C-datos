@@ -118,19 +118,22 @@ def doc_num_to_gamma(documentos):
             doc_in_gamma += extend_binary[-floor_log_2_n:]
     return doc_in_gamma
 
+def distancias_documentos(lista_documento):
+    distancia = ""
+    num_doc_actual=0
+    for i in range(len(lista_documento)):
+        if i == 0:
+            distancia += lista_documento[0]
+        else:
+            diferencia = int(lista_documento[i])-num_doc_actual
+            distancia += str(diferencia)
+        num_doc_actual = int(lista_documento[i])
+    return distancia    
+
 def crear_indice_distancias(documentos,codificacion):
     documentos_en_distancia = []
     for lista_documento in documentos:
-        distancia = ""
-        num_doc_actual=0
-        for i in range(len(lista_documento)):
-            if i == 0:
-                distancia += lista_documento[0]
-            else:
-                diferencia = int(lista_documento[i])-num_doc_actual
-                distancia += str(diferencia)
-            num_doc_actual = int(lista_documento[i])
-        documentos_en_distancia.append(distancia)
+        documentos_en_distancia.append(distancias_documentos(lista_documento))
     return crear_indice_concatenado(documentos_en_distancia,codificacion)
 
 def crear_indice_documentos(documentos,modo='c',codificacion=None):
@@ -160,3 +163,67 @@ def generar_indice_invertido(palabras_documentos,modo_lexico='c',codificacion=No
     print("\nDocumentos")
     print_indice_documentos(indice_doc)    
 
+"""Markdown"""
+def print_markdown_lexico_front_coding(lexico):
+    iguales,distintos,indice,front_coding_terminos = lexico
+    print("| iguales | distintos | punteros terminos |")
+    print("| -------- | -------- | -------- |")
+    if not(len(iguales) == len(distintos) and len(distintos) == len(indice)):
+        return
+    for i in range(len(iguales)):
+        print(f"| {iguales[i]} | {distintos[i]} | {indice[i]} |")
+    print()
+    print_indice_markdown((indice,front_coding_terminos))
+
+def print_indice_markdown(lexico):
+    """Dado una tupla de indice y terminos imprime el índice de léxicos de forma legible"""
+    indice,terminos = lexico
+    #cabecera
+    print("|",end="")
+    for termino in terminos:
+        print(f" {termino} ",end="|")
+    print()
+    #entrecabecera
+    print("|",end="")
+    for termino in terminos:
+        print(f" {'-'*len(termino)} ",end="|")
+    posicion = 0
+    print()
+    #Contenido
+
+    print("|",end="")
+    for i in range(len(indice)):
+        print(f" {indice[i]} ",end="|")
+
+def print_markdown_documentos(documentos):
+    print_indice_markdown(documentos)
+
+def print_markdown_indice_invertido(lexico,documentos):
+    if len(lexico)==4:
+        iguales,distintos,indice,front_coding_terminos = lexico
+        indice_documentos,num_documentos = documentos
+        print("| iguales | distintos | punteros terminos | punteros documentos |")
+        print("| -------- | -------- | -------- | -------- |")
+        if not(len(iguales) == len(distintos) and len(distintos) == len(indice)):
+            return
+        for i in range(len(iguales)):
+            print(f"| {iguales[i]} | {distintos[i]} | {indice[i]} | {indice_documentos[i]} |")
+        print()
+        print_indice_markdown((indice,front_coding_terminos))
+        print()
+        print()
+        print_indice_markdown(documentos)
+    if len(lexico)==2:
+        indice,terminos = lexico
+        indice_documentos,num_documentos = documentos
+        print("| punteros terminos | punteros documentos |")
+        print("| -------- | -------- |")
+        if not(len(indice) == len(indice_documentos)):
+            return
+        for i in range(len(indice)):
+            print(f"| {indice[i]} | {indice_documentos[i]} |")
+        print()
+        print_indice_markdown((indice,terminos))
+        print()
+        print()
+        print_indice_markdown(documentos)
