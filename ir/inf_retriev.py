@@ -1,3 +1,4 @@
+import math
 def iguales_anterior(anterior,posterior):
     iguales = 0
     for i in range(min(len(anterior),len(posterior))):
@@ -47,7 +48,6 @@ def crear_lexico(terminos,modo='c',n=None):
     Crear lexico recibe una lista de palabras y devuelve una tupla de listas.
     La primera es el índice de punteros a los terminos concatenados y la segunda son los términos concatenados.
     """ 
-    terminos.sort()
     indice = [0]
     len_anterior = 0
     if modo == 'c':
@@ -69,7 +69,12 @@ def print_lexico_front_coding(lexico):
         print(f"{iguales[i]}|{distintos[i]}|{indice[i]}")
     print_lexico((indice,front_coding_terminos))
 
-def crear_indice_concatenado(terminos):
+def crear_indice_concatenado(terminos,codificacion=None):
+    #Ver para codificaciones
+    if codificacion == 'u':
+        terminos = list(map(doc_num_to_unary,terminos))
+    elif codificacion == 'g':
+        terminos = list(map(doc_num_to_gamma,terminos))
     indice = [0]
     len_anterior = 0
     for termino in terminos:
@@ -92,7 +97,28 @@ def print_indice(lexico):
             largo_espacios -= len(str(indice[i]))-1
         print(indice[i],end=" "*largo_espacios)
         posicion += 1
-def crear_indice_distancias(documentos):
+
+def num_to_unary(num):
+    return "0"*(int(num)-1)+"1"
+
+def doc_num_to_unary(documentos):
+    """123->101001"""
+    doc_in_unary = ""
+    for doc_numbers in documentos:
+        doc_in_unary += num_to_unary(doc_numbers)
+    return doc_in_unary
+
+def doc_num_to_gamma(documentos):
+    doc_in_gamma = ""
+    for doc_numbers in documentos:
+        floor_log_2_n = math.floor(math.log2(int(doc_numbers)))
+        doc_in_gamma += num_to_unary(str(floor_log_2_n+1))
+        if int(doc_numbers)>1:
+            extend_binary = "0"*floor_log_2_n + "{0:b}".format(int(doc_numbers)-2**floor_log_2_n)
+            doc_in_gamma += extend_binary[-floor_log_2_n:]
+    return doc_in_gamma
+
+def crear_indice_distancias(documentos,codificacion):
     documentos_en_distancia = []
     for lista_documento in documentos:
         distancia = ""
@@ -105,14 +131,32 @@ def crear_indice_distancias(documentos):
                 distancia += str(diferencia)
             num_doc_actual += int(lista_documento[i])
         documentos_en_distancia.append(distancia)
-    return crear_indice_concatenado(documentos_en_distancia)
+    return crear_indice_concatenado(documentos_en_distancia,codificacion)
 
-def crear_indice_documentos(documentos,modo='c'):
+def crear_indice_documentos(documentos,modo='c',codificacion=None):
     if modo =='c':
-        indice_documentos = crear_indice_concatenado(documentos)
+        indice_documentos = crear_indice_concatenado(documentos,codificacion)
     elif modo == 'd':
-        indice_documentos = crear_indice_distancias(documentos)
+        indice_documentos = crear_indice_distancias(documentos,codificacion)
     return indice_documentos
 
 def print_indice_documentos(indice_documento):
     print_indice(indice_documento)
+
+def generar_indice_invertido(palabras_documentos,modo_lexico='c',codificacion=None,distancia_docs=False):
+    terminos = list(palabras_documentos.keys())
+    documentos = list(palabras_documentos.values())
+    lexico = crear_lexico(terminos,modo_lexico)
+    modo_docs = 'c'
+    if distancia_docs == True:
+        modo_docs = 'd' 
+    indice_doc = crear_indice_documentos(documentos,modo_docs,codificacion)
+    
+    print("Lexico")
+    if modo_lexico in ['fc','fcp']:
+        print_lexico_front_coding(lexico)
+    elif modo_lexico == 'c':
+        print_lexico(lexico)
+    print("\nDocumentos")
+    print_indice_documentos(indice_doc)    
+
