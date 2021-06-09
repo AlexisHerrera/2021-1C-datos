@@ -227,3 +227,33 @@ def print_markdown_indice_invertido(lexico,documentos):
         print()
         print()
         print_indice_markdown(documentos)
+
+def print_markdown_indice_invertido_indexado(lexico,documentos):
+    if len(lexico)==4:
+        iguales,distintos,indice,front_coding_terminos = lexico
+        indice_documentos,num_documentos = documentos
+        print("| posicion | iguales | distintos | punteros terminos | punteros documentos |")
+        print("| -------- | -------- | -------- | -------- | -------- |")
+        if not(len(iguales) == len(distintos) and len(distintos) == len(indice)):
+            return
+        for i in range(len(iguales)):
+            print(f"| {i } | {iguales[i]} | {distintos[i]} | {indice[i]} | {indice_documentos[i]} |")
+        print()
+        print_indice_markdown((indice,front_coding_terminos))
+        print()
+        print()
+        print_indice_markdown(documentos)
+    if len(lexico)==2:
+        indice,terminos = lexico
+        indice_documentos,num_documentos = documentos
+        print("| posicion | punteros terminos | punteros documentos |")
+        print("| -------- | -------- | -------- |")
+        if not(len(indice) == len(indice_documentos)):
+            return
+        for i in range(len(indice)):
+            print(f"| {i}|{indice[i]} | {indice_documentos[i]} |")
+        print()
+        print_indice_markdown((indice,terminos))
+        print()
+        print()
+        print_indice_markdown(documentos)
