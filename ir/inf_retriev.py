@@ -257,3 +257,48 @@ def print_markdown_indice_invertido_indexado(lexico,documentos):
         print()
         print()
         print_indice_markdown(documentos)
+def separar_segun_indice_markdown(texto,indice):
+    texto_separado_markdown = ""
+    posicion_indice = 0
+    for i in range(len(texto)):
+        if posicion_indice < len(indice) and i == indice[posicion_indice]:
+            texto_separado_markdown += " | "
+            posicion_indice += 1
+        texto_separado_markdown += texto[i]
+    texto_separado_markdown += " | "
+    return texto_separado_markdown
+
+def calculate_tfi(termino,numero_doc,documentos_contenido):
+    tfi = 0
+    palabras_documento_i = documentos_contenido.get(numero_doc,"")
+    for palabra_doc_i in palabras_documento_i.split(" "):
+        if termino == palabra_doc_i:
+            tfi += 1
+    return tfi
+
+def print_markdown_tabla_tf_idf(palabras_documentos,documentos_contenido):
+    print(f"| terminos |",end="")
+    existing_docs = []
+    for documents in palabras_documentos.values():
+        for num_doc in documents:
+            if int(num_doc) not in existing_docs:
+                existing_docs.append(int(num_doc))
+    existing_docs.sort()
+    for num_doc in existing_docs:
+        print(f" {num_doc} |",end="")
+    print(f"  Log((N+1)/fti)|")
+    print("|",end="")
+    for i in range(len(existing_docs)+2):
+        print(" --- |",end="")
+    print()
+    big_n = len(existing_docs)
+    for word,documents in palabras_documentos.items():
+        print(f"| {word} |",end="")
+        tf_terminos = 0
+        for doc_record in existing_docs:
+            tfi = calculate_tfi(word,str(doc_record),documentos_contenido)
+            print(f" {tfi} |",end="")
+            if tfi >0:
+                tf_terminos += 1
+        if tf_terminos >0: print(f"Log({big_n+1}/{tf_terminos}):{round(math.log10((big_n+1)/tf_terminos),2)} |")
+        else : print(0)
