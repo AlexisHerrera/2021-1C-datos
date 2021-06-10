@@ -268,15 +268,35 @@ def separar_segun_indice_markdown(texto,indice):
     texto_separado_markdown += " | "
     return texto_separado_markdown
 
-def calculate_tfi(termino,numero_doc,documentos_contenido):
+def funcion_tf_idf(termino,numero_doc,documentos_contenido,b):
     tfi = 0
     palabras_documento_i = documentos_contenido.get(numero_doc,"")
     for palabra_doc_i in palabras_documento_i.split(" "):
         if termino == palabra_doc_i:
             tfi += 1
+    if b:
+        largo_doc_j = len(documentos_contenido.get(numero_doc,"").split(" "))
+        largos_documentos = [len(contenido_documento.split(" ")) for contenido_documento in documentos_contenido.values()]
+        avdl = sum(largos_documentos)/len(documentos_contenido)
+        normalizacion = (1-b+b*((largo_doc_j)/avdl))
+        #print(f"Largo doc {numero_doc}: {largo_doc_j}")
+        return round(tfi/normalizacion,2)
     return tfi
 
-def print_markdown_tabla_tf_idf(palabras_documentos,documentos_contenido):
+def funcion_bm25(termino,numero_doc,documentos_contenido,k,b):
+    if k is None:
+        return -1
+    tfi = funcion_tf_idf(termino,numero_doc,documentos_contenido,None)
+    if b:
+        largo_doc_j = len(documentos_contenido.get(numero_doc,"").split(" "))
+        largos_documentos = [len(contenido_documento.split(" ")) for contenido_documento in documentos_contenido.values()]
+        avdl = sum(largos_documentos)/len(documentos_contenido)
+        normalizacion = (1-b+b*((largo_doc_j)/avdl))
+        return round((k+1)*tfi/(tfi+k*normalizacion),2)
+    return (k+1)*tfi/(tfi+k)
+
+
+def print_markdown_tabla_tf_idf(palabras_documentos,documentos_contenido,modo="tf-idf",k=None,b=None):
     print(f"| terminos |",end="")
     existing_docs = []
     for documents in palabras_documentos.values():
@@ -296,7 +316,10 @@ def print_markdown_tabla_tf_idf(palabras_documentos,documentos_contenido):
         print(f"| {word} |",end="")
         tf_terminos = 0
         for doc_record in existing_docs:
-            tfi = calculate_tfi(word,str(doc_record),documentos_contenido)
+            if modo == "tf-idf":
+                tfi = funcion_tf_idf(word,str(doc_record),documentos_contenido,b)
+            elif modo == "bm25":
+                tfi = funcion_bm25(word,str(doc_record),documentos_contenido,k,b)
             print(f" {tfi} |",end="")
             if tfi >0:
                 tf_terminos += 1
