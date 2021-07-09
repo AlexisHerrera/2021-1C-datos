@@ -1,0 +1,10 @@
+Se quiere aplicar LSH a un conjunto de documentos para encontrar los pares de documentos mas similares.
+Queremos que si J(D1,D2)>=0.7 entonces la probabilidad de que D1 y D2 sean candidatos sea >= 0.9 
+y queremos que si J(D1,D2) <= 0.5 entonces la probabilidad de que sean candidatos sea <= a 0.3. 
+
+Indique cuántas funciones minhash usaría y que combinación de AND y OR usaría para lograr lo pedido.
+
+Cuando r=6 y b=19 obtengo;
+p1 = 0.9072 cuando sJ(D1,d2) >= 0.7
+p2 = 0.2586 cuando sJ(D1,d2) <= 0.5
+Utilizaré 6 minhash por cada tabla (de las 19), es decir utilizaré en total 114 funciones de minhash.
