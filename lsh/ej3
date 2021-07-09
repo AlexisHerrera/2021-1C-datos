@@ -1,6 +1,0 @@
-Podría hacer lo siguiente:
-* Reducir la cantidad de r
-* Aumentar la cantidad de b
-Pero como se indica que algunos pares que deberían
-ser similares no lo son, es decir falsos negativos.
-Lo que se debería hacer es aumentar la cantidad de b.
