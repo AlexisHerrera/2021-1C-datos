@@ -1,0 +1,9 @@
+Se quiere construir una función LSH usando Jaccard que detecte aquellos documentos cuya semejanza esté entre 0.8 y 1.0. 
+Vamos a pedir que si dos documentos tienen semejanza 0.9 o mayor la probabilidad de detectarlos sea 0.95 y que si dos documentos tienen semejanza 0.8 o menor la probabilidad de detectarlos sea inferior a 0.2.
+Construir la función LSH pedida usando la menor cantidad de funciones de hashing posible, indicar r y b. Reflexione sobre lo que pasó en este ejercicio.
+
+Si tienen semejanza mayor a 0.9 implica que la distancia debe ser menor a 0.1. Cuando eso sucede quiero que tenga probabilidad 0.95 o mayor de colisionar
+Si tienen semejanza menor a 0.8 implica que la distancia debe ser mayor a 0.2. Cuando eso sucede quiero que tenga probabilidad 0.20 o menor de colisionar
+
+Con r=22 y b=29 obtengo p1'=0.95 y p2'=0.19. Obtengo 638 minhashes
+

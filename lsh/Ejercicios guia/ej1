@@ -1,0 +1,31 @@
+Se usa b=2 y r=3. Se utiliza 7 buckets para cada banda (m=7)
+		D1    D2    D3 
+MH1     1     0     1 
+MH2     3     1     3 
+MH3     1     2     1 
+MH4     2     2     3 
+MH5     0     0     2 
+MH6     0     0     2 
+Documento 1:
+#Banda 1
+h(1,3,1)->X
+#Banda 2
+h(2,0,0)->Y
+
+Documento 2:
+#Banda 1
+h(0,1,2)->Z
+#Banda 2
+h(2,0,0)->Y
+
+Documento 3:
+#Banda 1
+h(1,3,1)->X
+#Banda 2
+h(3,2,2)->Y
+
+#Funcion de hash
+
+#Puedo usar el 7 ya que es primo. FUNCIONA! :)
+def h(mh1,mh2,mh3):
+	return (3*mh1 + 1*mh2 + 1*mh3)%7
